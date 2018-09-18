@@ -22,6 +22,12 @@ public class Snake extends JFrame {
 	boolean xL = false;
 	boolean yU = false;
 	boolean yD = false;
+	int xValueRight;
+	int xValueLeft;
+	int yValueUp;
+	int yValueDown;
+
+	boolean trigger = false;
 
 	Snake() {
 
@@ -62,6 +68,8 @@ public class Snake extends JFrame {
 
 			if (source == label1) {
 
+				xValueRight = figures.getXposition();
+
 				yU = false;
 				yD = false;
 
@@ -83,6 +91,8 @@ public class Snake extends JFrame {
 			Object source = e.getSource();
 
 			if (source == label1) {
+
+				xValueLeft = figures.getXposition();
 
 				yU = false;
 				yD = false;
@@ -125,14 +135,24 @@ public class Snake extends JFrame {
 
 			if (source == label1) {
 
-				xR = false;
-				xL = false;
+				if (xValueRight + 35 <= figures.getXposition() || xValueLeft - 35 >= figures.getXposition()) {
 
-				if (yU != true)
-					yD = true;
+					xR = false;
+					xL = false;
 
-				else
+					if (yU != true)
+						yD = true;
+
+					else
+						yD = false;
+				}
+
+				else if (yU == true)
 					yD = false;
+				
+				else
+					trigger = true;
+
 			}
 
 		}
@@ -143,6 +163,7 @@ public class Snake extends JFrame {
 		Snake snake = new Snake();
 
 		while (true) {
+			
 
 			if ((snake.xR == true) && (snake.figures.getXposition() < 445))
 				snake.goRight();
@@ -156,8 +177,30 @@ public class Snake extends JFrame {
 			if ((snake.yD == true) && (snake.figures.getYposition() < 405))
 				snake.goDown();
 
+			else if ((snake.yD == false) && (snake.figures.getYposition() < 405) && snake.trigger == true) {
+
+				if ((snake.xValueRight + 35 <= snake.figures.getXposition() || snake.figures.getXposition() == 445)
+						|| (snake.xValueLeft - 35 >= snake.figures.getXposition()
+								|| snake.figures.getXposition() == 5)) {
+
+					
+						snake.yD = true;
+						snake.trigger = false;
+						snake.xR = false;
+						snake.xL = false;
+					
+				}
+
+				else if (snake.xR == true)
+					snake.xR = true;
+				
+				else if(snake.xL == true)
+					snake.xL = true;
+
+			}
+
 			try {
-				Thread.sleep(50);
+				Thread.sleep(250);
 			} catch (InterruptedException e) {
 
 				e.printStackTrace();
