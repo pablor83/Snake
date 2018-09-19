@@ -27,7 +27,13 @@ public class Snake extends JFrame {
 	int yValueUp;
 	int yValueDown;
 
-	boolean trigger = false;
+	boolean triggerDelayedRight = false;
+	boolean triggerDelayedLeft = false;
+	boolean triggerDelayedUp = false;
+	boolean triggerDelayedDown = false;
+
+	char courseLeftRight;
+	char courseUpDown;
 
 	Snake() {
 
@@ -66,6 +72,8 @@ public class Snake extends JFrame {
 
 			Object source = e.getSource();
 
+			courseLeftRight = 'R';
+
 			if (source == label1) {
 
 				xValueRight = figures.getXposition();
@@ -89,6 +97,8 @@ public class Snake extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 
 			Object source = e.getSource();
+
+			courseLeftRight = 'L';
 
 			if (source == label1) {
 
@@ -114,14 +124,37 @@ public class Snake extends JFrame {
 
 			Object source = e.getSource();
 
-			xR = false;
-			xL = false;
+			if (xValueRight + 35 <= figures.getXposition() || xValueLeft - 35 >= figures.getXposition()) {
 
-			if (yD != true)
-				yU = true;
+				xR = false;
+				xL = false;
+
+				if (yD != true)
+					yU = true;
+
+				else
+					yU = false;
+			}
+
+			else if (courseUpDown != 'D') {
+
+				xR = false;
+				xL = false;
+
+				if (yD != true)
+					yU = true;
+
+				else
+					yU = false;
+			}
+
+			else if (triggerDelayedDown == true)
+				yU = false;
 
 			else
-				yU = false;
+				triggerDelayedUp = true;
+			
+			courseUpDown = 'U';
 
 		}
 	};
@@ -147,11 +180,25 @@ public class Snake extends JFrame {
 						yD = false;
 				}
 
-				else if (yU == true)
+				else if (courseUpDown != 'U') {
+
+					xR = false;
+					xL = false;
+
+					if (yU != true)
+						yD = true;
+
+					else
+						yD = false;
+				}
+
+				else if (triggerDelayedUp == true)
 					yD = false;
-				
+
 				else
-					trigger = true;
+					triggerDelayedDown = true;
+
+				courseUpDown = 'D';
 
 			}
 
@@ -163,44 +210,60 @@ public class Snake extends JFrame {
 		Snake snake = new Snake();
 
 		while (true) {
-			
 
 			if ((snake.xR == true) && (snake.figures.getXposition() < 445))
 				snake.goRight();
 
-			if ((snake.xL == true) && (snake.figures.getXposition() > 5))
+			else if ((snake.xL == true) && (snake.figures.getXposition() > 5))
 				snake.goLeft();
 
-			if ((snake.yU == true) && (snake.figures.getYposition() > 20))
+			else if ((snake.yU == true) && (snake.figures.getYposition() > 20))
 				snake.goUp();
 
-			if ((snake.yD == true) && (snake.figures.getYposition() < 405))
+			else if ((snake.yD == true) && (snake.figures.getYposition() < 405))
 				snake.goDown();
 
-			else if ((snake.yD == false) && (snake.figures.getYposition() < 405) && snake.trigger == true) {
+			if (snake.yU == false && snake.triggerDelayedUp == true) {
 
-				if ((snake.xValueRight + 35 <= snake.figures.getXposition() || snake.figures.getXposition() == 445)
-						|| (snake.xValueLeft - 35 >= snake.figures.getXposition()
-								|| snake.figures.getXposition() == 5)) {
+				if (snake.xValueRight + 35 <= snake.figures.getXposition()
+						|| snake.xValueLeft - 35 >= snake.figures.getXposition()) {
 
-					
-						snake.yD = true;
-						snake.trigger = false;
-						snake.xR = false;
-						snake.xL = false;
-					
+					snake.yU = true;
+					snake.triggerDelayedUp = false;
+					snake.xR = false;
+					snake.xL = false;
+
 				}
 
 				else if (snake.xR == true)
 					snake.xR = true;
-				
-				else if(snake.xL == true)
+
+				else if (snake.xL == true)
+					snake.xL = true;
+			}
+
+			else if ((snake.yD == false) && (snake.triggerDelayedDown == true)) {
+
+				if (snake.xValueRight + 35 <= snake.figures.getXposition()
+						|| snake.xValueLeft - 35 >= snake.figures.getXposition()) {
+
+					snake.yD = true;
+					snake.triggerDelayedDown = false;
+					snake.xR = false;
+					snake.xL = false;
+
+				}
+
+				else if (snake.xR == true)
+					snake.xR = true;
+
+				else if (snake.xL == true)
 					snake.xL = true;
 
 			}
 
 			try {
-				Thread.sleep(250);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 
 				e.printStackTrace();
