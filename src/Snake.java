@@ -22,10 +22,9 @@ public class Snake extends JFrame {
 	boolean xL = false;
 	boolean yU = false;
 	boolean yD = false;
-	int xValueRight;
-	int xValueLeft;
-	int yValueUp;
-	int yValueDown;
+
+	int xValue;
+	int yValue;
 
 	boolean triggerDelayedRight = false;
 	boolean triggerDelayedLeft = false;
@@ -72,19 +71,49 @@ public class Snake extends JFrame {
 
 			Object source = e.getSource();
 
-			courseLeftRight = 'R';
-
 			if (source == label1) {
 
-				xValueRight = figures.getXposition();
+				xValue = figures.getXposition();
 
-				yU = false;
-				yD = false;
+				if (yValue + 35 <= figures.getYposition() || yValue - 35 >= figures.getYposition()) {
 
-				if (xL != true)
+					yU = false;
+					yD = false;
+
+					if (xL != true)
+						xR = true;
+					else
+						xR = false;
+
+				}
+
+				else if (courseLeftRight != 'L') {
+
+					yU = false;
+					yD = false;
+					triggerDelayedLeft = false;
+
+					if (xL != true)
+						xR = true;
+					else
+						xR = false;
+				}
+
+				else if (courseLeftRight == 'L' && triggerDelayedLeft == true) {
+
+					yU = false;
+					yD = false;
+					triggerDelayedLeft = false;
 					xR = true;
+
+				}
+
 				else
-					xR = false;
+					triggerDelayedRight = true;
+
+				courseLeftRight = 'R';
+
+				
 
 			}
 
@@ -98,19 +127,50 @@ public class Snake extends JFrame {
 
 			Object source = e.getSource();
 
-			courseLeftRight = 'L';
-
 			if (source == label1) {
 
-				xValueLeft = figures.getXposition();
+				if (yValue + 35 <= figures.getYposition() || yValue - 35 >= figures.getYposition()) {
 
-				yU = false;
-				yD = false;
+					xValue = figures.getXposition();
 
-				if (xR != true)
+					yU = false;
+					yD = false;
+
+					if (xR != true)
+						xL = true;
+					else
+						xL = false;
+				}
+
+				else if (courseLeftRight != 'R') {
+
+					yU = false;
+					yD = false;
+					triggerDelayedRight = false;
+
+					if (xR != true)
+						xL = true;
+					else
+						xL = false;
+				}
+
+				else if (courseLeftRight == 'R' && triggerDelayedRight == true) {
+
+					yU = false;
+					yD = false;
+					triggerDelayedRight = false;
 					xL = true;
-				else
-					xL = false;
+
+				}
+
+				else {
+					triggerDelayedLeft = true;
+
+				}
+
+				courseLeftRight = 'L';
+
+				
 
 			}
 
@@ -124,7 +184,9 @@ public class Snake extends JFrame {
 
 			Object source = e.getSource();
 
-			if (xValueRight + 35 <= figures.getXposition() || xValueLeft - 35 >= figures.getXposition()) {
+			yValue = figures.getYposition();
+
+			if (xValue + 35 <= figures.getXposition() || xValue - 35 >= figures.getXposition()) {
 
 				xR = false;
 				xL = false;
@@ -140,6 +202,7 @@ public class Snake extends JFrame {
 
 				xR = false;
 				xL = false;
+				triggerDelayedDown = false;
 
 				if (yD != true)
 					yU = true;
@@ -148,13 +211,21 @@ public class Snake extends JFrame {
 					yU = false;
 			}
 
-			else if (triggerDelayedDown == true)
-				yU = false;
+			else if (courseUpDown == 'D' && triggerDelayedDown == true) {
+
+				xR = false;
+				xL = false;
+				triggerDelayedDown = false;
+				yU = true;
+
+			}
 
 			else
 				triggerDelayedUp = true;
-			
+
 			courseUpDown = 'U';
+
+			
 
 		}
 	};
@@ -166,9 +237,11 @@ public class Snake extends JFrame {
 
 			Object source = e.getSource();
 
+			yValue = figures.getYposition();
+
 			if (source == label1) {
 
-				if (xValueRight + 35 <= figures.getXposition() || xValueLeft - 35 >= figures.getXposition()) {
+				if (xValue + 35 <= figures.getXposition() || xValue - 35 >= figures.getXposition()) {
 
 					xR = false;
 					xL = false;
@@ -178,28 +251,38 @@ public class Snake extends JFrame {
 
 					else
 						yD = false;
+
 				}
 
 				else if (courseUpDown != 'U') {
 
 					xR = false;
 					xL = false;
+					triggerDelayedUp = false;
 
 					if (yU != true)
 						yD = true;
 
 					else
 						yD = false;
+
 				}
 
-				else if (triggerDelayedUp == true)
-					yD = false;
+				else if (courseUpDown == 'U' && triggerDelayedUp == true) {
+
+				xR = false;
+				xL = false;
+				triggerDelayedUp = false;
+				yD = true;
+
+			}
 
 				else
 					triggerDelayedDown = true;
 
 				courseUpDown = 'D';
 
+				
 			}
 
 		}
@@ -223,10 +306,46 @@ public class Snake extends JFrame {
 			else if ((snake.yD == true) && (snake.figures.getYposition() < 405))
 				snake.goDown();
 
-			if (snake.yU == false && snake.triggerDelayedUp == true) {
+			if (snake.xR == false && snake.triggerDelayedRight == true) {
 
-				if (snake.xValueRight + 35 <= snake.figures.getXposition()
-						|| snake.xValueLeft - 35 >= snake.figures.getXposition()) {
+				if (snake.yValue + 35 <= snake.figures.getYposition()
+						|| snake.yValue - 35 >= snake.figures.getYposition()) {
+
+					snake.xR = true;
+					snake.triggerDelayedRight = false;
+					snake.yU = false;
+					snake.yD = false;
+				}
+
+				else if (snake.yU == true)
+					snake.yU = true;
+
+				else if (snake.yD == true)
+					snake.yD = true;
+			}
+
+			else if (snake.xL == false && snake.triggerDelayedLeft == true) {
+
+				if (snake.yValue + 35 <= snake.figures.getYposition()
+						|| snake.yValue - 35 >= snake.figures.getYposition()) {
+
+					snake.xL = true;
+					snake.triggerDelayedLeft = false;
+					snake.yU = false;
+					snake.yD = false;
+				}
+
+				else if (snake.yU == true)
+					snake.yU = true;
+
+				else if (snake.yD == true)
+					snake.yD = true;
+			}
+
+			else if (snake.yU == false && snake.triggerDelayedUp == true) {
+
+				if (snake.xValue + 35 <= snake.figures.getXposition()
+						|| snake.xValue - 35 >= snake.figures.getXposition()) {
 
 					snake.yU = true;
 					snake.triggerDelayedUp = false;
@@ -244,8 +363,8 @@ public class Snake extends JFrame {
 
 			else if ((snake.yD == false) && (snake.triggerDelayedDown == true)) {
 
-				if (snake.xValueRight + 35 <= snake.figures.getXposition()
-						|| snake.xValueLeft - 35 >= snake.figures.getXposition()) {
+				if (snake.xValue + 35 <= snake.figures.getXposition()
+						|| snake.xValue - 35 >= snake.figures.getXposition()) {
 
 					snake.yD = true;
 					snake.triggerDelayedDown = false;
@@ -263,7 +382,7 @@ public class Snake extends JFrame {
 			}
 
 			try {
-				Thread.sleep(200);
+				Thread.sleep(50);
 			} catch (InterruptedException e) {
 
 				e.printStackTrace();

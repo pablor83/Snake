@@ -8,8 +8,8 @@ import javax.swing.JPanel;
 
 public class Figures extends JPanel {
 
-	private int x = 5;
-	private int y = 20;
+	private int x = 100;
+	private int y = 100;
 
 	private int rX;
 	private int rY;
@@ -78,7 +78,7 @@ public class Figures extends JPanel {
 		
 		for (Rectangle rectList : list) {
 			g2d.fill(rectList);
-			
+			 
 
 		}
 
