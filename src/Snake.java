@@ -99,21 +99,8 @@ public class Snake extends JFrame {
 						xR = false;
 				}
 
-				else if (courseLeftRight == 'L' && triggerDelayedLeft == true) {
-
-					yU = false;
-					yD = false;
-					triggerDelayedLeft = false;
-					xR = true;
-
-				}
-
 				else
 					triggerDelayedRight = true;
-
-				
-
-				
 
 			}
 
@@ -127,11 +114,11 @@ public class Snake extends JFrame {
 
 			Object source = e.getSource();
 
+			xValue = figures.getXposition();
+
 			if (source == label1) {
 
 				if (yValue + 35 <= figures.getYposition() || yValue - 35 >= figures.getYposition()) {
-
-					xValue = figures.getXposition();
 
 					yU = false;
 					yD = false;
@@ -154,23 +141,10 @@ public class Snake extends JFrame {
 						xL = false;
 				}
 
-				else if (courseLeftRight == 'R' && triggerDelayedRight == true) {
-
-					yU = false;
-					yD = false;
-					triggerDelayedRight = false;
-					xL = true;
-
-				}
-
 				else {
 					triggerDelayedLeft = true;
 
 				}
-
-				
-
-				
 
 			}
 
@@ -211,21 +185,8 @@ public class Snake extends JFrame {
 					yU = false;
 			}
 
-			else if (courseUpDown == 'D' && triggerDelayedDown == true) {
-
-				xR = false;
-				xL = false;
-				triggerDelayedDown = false;
-				yU = true;
-
-			}
-
 			else
 				triggerDelayedUp = true;
-
-			
-
-			
 
 		}
 	};
@@ -255,7 +216,6 @@ public class Snake extends JFrame {
 				}
 
 				else if (courseUpDown != 'U') {
-
 					xR = false;
 					xL = false;
 					triggerDelayedUp = false;
@@ -268,21 +228,9 @@ public class Snake extends JFrame {
 
 				}
 
-				else if (courseUpDown == 'U' && triggerDelayedUp == true) {
-
-				xR = false;
-				xL = false;
-				triggerDelayedUp = false;
-				yD = true;
-
-			}
-
 				else
 					triggerDelayedDown = true;
 
-				
-
-				
 			}
 
 		}
@@ -301,7 +249,7 @@ public class Snake extends JFrame {
 
 			else if ((snake.xL == true) && (snake.figures.getXposition() > 5)) {
 				snake.goLeft();
-				snake.courseLeftRight = 'L';	
+				snake.courseLeftRight = 'L';
 			}
 
 			else if ((snake.yU == true) && (snake.figures.getYposition() > 20)) {
@@ -311,7 +259,7 @@ public class Snake extends JFrame {
 
 			else if ((snake.yD == true) && (snake.figures.getYposition() < 405)) {
 				snake.goDown();
-				snake.courseUpDown = 'D';	
+				snake.courseUpDown = 'D';
 			}
 
 			if (snake.xR == false && snake.triggerDelayedRight == true) {
