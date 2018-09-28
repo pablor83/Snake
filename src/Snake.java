@@ -18,21 +18,23 @@ public class Snake extends JFrame {
 
 	JLabel label1;
 
-	boolean xR = false;
-	boolean xL = false;
-	boolean yU = false;
-	boolean yD = false;
+	private boolean xR = false;
+	private boolean xL = false;
+	private boolean yU = false;
+	private boolean yD = false;
 
-	int xValue;
-	int yValue;
+	private int xValue;
+	private int yValue;
 
-	boolean triggerDelayedRight = false;
-	boolean triggerDelayedLeft = false;
-	boolean triggerDelayedUp = false;
-	boolean triggerDelayedDown = false;
+	private boolean triggerDelayedRight = false;
+	private boolean triggerDelayedLeft = false;
+	private boolean triggerDelayedUp = false;
+	private boolean triggerDelayedDown = false;
 
 	char courseLeftRight;
 	char courseUpDown;
+
+	int setSnakeLong;
 
 	Snake() {
 
@@ -337,6 +339,26 @@ public class Snake extends JFrame {
 
 			}
 
+			if (snake.figures.tailCollisionDetection() == true) {
+
+				snake.setSnakeLong = snake.figures.snakeLong();
+
+				for (int i = snake.setSnakeLong; i > 1; i--) {
+
+					snake.killSnake();
+
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						
+						e.printStackTrace();
+					}
+
+				}
+				
+				snake.cleanSnake();
+			}
+
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
@@ -374,5 +396,25 @@ public class Snake extends JFrame {
 		figures.addHeadRectList();
 		repaint();
 
+	}
+
+	public void killSnake() {
+
+		xR = false;
+		xL = false;
+		yU = false;
+		yD = false;
+
+		int snakeLong = setSnakeLong -= 1;
+
+		figures.changeSnakeLong(snakeLong);
+		repaint();
+
+	}
+	
+	public void cleanSnake () {
+		
+		figures.cleanList();
+		repaint();
 	}
 }
