@@ -241,6 +241,9 @@ public class Snake extends JFrame {
 	public static void main(String[] args) {
 
 		Snake snake = new Snake();
+		
+		snake.figures.setRandomPoint();
+		snake.figures.addFood();
 
 		while (true) {
 
@@ -350,13 +353,20 @@ public class Snake extends JFrame {
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
-						
+
 						e.printStackTrace();
 					}
 
 				}
-				
+
 				snake.cleanSnake();
+			}
+
+			if (snake.figures.detectEatenFood() == true) {
+
+				snake.figures.changeSnakeLong(snake.figures.snakeLong() + 1);
+				snake.figures.setRandomPoint();
+				snake.figures.addFood();
 			}
 
 			try {
@@ -411,9 +421,9 @@ public class Snake extends JFrame {
 		repaint();
 
 	}
-	
-	public void cleanSnake () {
-		
+
+	public void cleanSnake() {
+
 		figures.cleanList();
 		repaint();
 	}

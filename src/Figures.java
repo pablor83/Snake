@@ -6,6 +6,7 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JPanel;
 
@@ -18,8 +19,14 @@ public class Figures extends JPanel {
 	private int rY;
 
 	private int sLong = 20;
+	private int foodListSize = 1;
 
 	private List<Rectangle> list = new LinkedList<>();
+	private List<Rectangle> foodList = new LinkedList<>();
+
+	private Random randomFood = new Random();
+
+	Color color = new Color(300300300);
 
 	public void addHeadRectList() {
 
@@ -27,11 +34,23 @@ public class Figures extends JPanel {
 
 	}
 
-	public void addRect() {
+	public void setRandomPoint() {
 
-		list.add(new Rectangle(rX, rY, 35, 35));
-		repaint();
+		rX = randomFood.nextInt(441) + 5;
+		rY = randomFood.nextInt(386) + 20;
 
+	}
+
+	public void addFood() {
+
+		foodList.add(new Rectangle(rX, rY, 35, 35));
+		
+
+	}
+	
+	public void setFoodSize(int i) {
+
+		foodListSize = i;
 	}
 
 	public void setXstep(int x) {
@@ -79,6 +98,22 @@ public class Figures extends JPanel {
 
 		return collision;
 	}
+	
+	public boolean detectEatenFood() {
+
+		boolean food = false;
+
+		if (list.size() > 0) {
+			for (int i = 0; i < foodList.size(); i++) {
+
+				if (list.get(list.size() - 1).intersects(foodList.get(i)))
+				food = true;
+			}
+		}
+
+		return food;
+	}
+
 
 	public void changeSnakeLong(int i) {
 
@@ -118,12 +153,21 @@ public class Figures extends JPanel {
 
 		g2d.drawString("Oœ X: " + x, 360, 15);
 		g2d.drawString("Oœ Y: " + y, 420, 15);
+		
+		for (Rectangle rFood : foodList) {
+
+			g2d.setColor(color);
+			g2d.fill(rFood);
+		}
 
 		for (Rectangle rectList : list) {
 			g2d.setColor(Color.BLUE);
 			g2d.fill(rectList);
 
 		}
+		
+		if (foodList.size() > foodListSize)
+			foodList.remove(0);
 
 		if (list.size() == sLong)
 			list.remove(0);
