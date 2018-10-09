@@ -1,6 +1,7 @@
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -13,8 +14,8 @@ import javax.swing.JPanel;
 
 public class Figures extends JPanel {
 
-	private int x = 100;
-	private int y = 100;
+	private int x;
+	private int y;
 
 	private int rX;
 	private int rY;
@@ -202,9 +203,9 @@ public class Figures extends JPanel {
 
 		Graphics2D g2d = (Graphics2D) g;
 
-		g2d.drawString("Oœ X: " + x, 360, 15);
-		g2d.drawString("Oœ Y: " + y, 420, 15);
-
+//		g2d.drawString("Oœ X: " + x, 360, 15);
+//		g2d.drawString("Oœ Y: " + y, 420, 15);
+				
 		for (Rectangle rFood : foodList) {
 
 			g2d.setColor(colorFood);
@@ -217,7 +218,6 @@ public class Figures extends JPanel {
 			g2d.setColor(new Color(colorSnake));
 
 			g2d.fill(rectList);
-
 		}
 
 		if (foodList.size() > foodListSize)
@@ -239,25 +239,31 @@ public class Figures extends JPanel {
 
 			list.removeAll(list);
 
-			int[] xP = { x, x + 10, x + 30, x + 20, x + 40, x + 20, x + 30, x + 10, x, x - 10, x - 30, x - 20, x - 40,
-					x - 20, x - 30, x - 10 };
-			int[] yP = { y, y + 20, y, y + 30, y + 40, y + 50, y + 80, y + 60, y + 80, y + 60, y + 80, y + 50, y + 40,
-					y + 30, y, y + 20 };
+			int[] xP = { x+10, x+20, x+40, x+30, x+50, x+30, x+40, x+20, x+10, x, x-20, x-10, x-30,
+					x-10, x-20, x };
+			int[] yP = { y-20, y, y-20, y+10, y+20, y+30, y+60, y+40, y+60, y+40, y+60, y+30, y+20,
+					y+10, y-20, y };
 
-			g2d.setColor(Color.yellow);
+			GradientPaint gp = new GradientPaint(x, y, Color.yellow, x+40, y+60, Color.RED);
+			g2d.setPaint(gp);
 			g2d.fillPolygon(xP, yP, xP.length);
 
 			Font font = new Font("TimesRoman", Font.BOLD, 30);
 
 			g2d.setColor(Color.red);
 			g2d.setFont(font);
-			g2d.drawString("GAME OVER!!!", 130, 230);
+			g2d.drawString("GAME OVER!!!", 155, 280);
 
 		}
-
+		
+		
 		if (pauseInscription == true) {
 
-			g2d.drawString("Pauza", 250, 50);
+			Font font = new Font("TimesRoman", Font.BOLD, 24);
+			g2d.setColor(Color.red);
+			g2d.setFont(font);
+			
+			g2d.drawString("Pauza", 215, 250);
 		}
 
 		g2d.setColor(Color.lightGray);

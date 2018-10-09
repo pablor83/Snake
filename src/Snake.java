@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -17,7 +19,7 @@ public class Snake extends JFrame {
 
 	ActionMap actionMap = new ActionMap();
 
-	JLabel label1;
+	JLabel labelGameName, labelPoints, labelInfoPause, labelInfoStart;
 	JButton restartButton;
 
 	private boolean xR = false;
@@ -40,7 +42,9 @@ public class Snake extends JFrame {
 
 	private boolean pauseGame = false;
 	private boolean gameOver = true;
-	private int test = 1;
+
+	private int points = 0;
+	private long setSpeed = 60;
 
 	Snake() {
 
@@ -51,9 +55,25 @@ public class Snake extends JFrame {
 		setVisible(true);
 		setResizable(false);
 
-		label1 = new JLabel("W¹¿");
-		label1.setBounds(200, 10, 50, 20);
-		add(label1);
+		labelGameName = new JLabel("W¹¿");
+		labelGameName.setBounds(240, 5, 50, 20);
+		add(labelGameName);
+
+		labelPoints = new JLabel("Punkty: " + points);
+		labelPoints.setBounds(370, 20, 100, 20);
+		labelPoints.setFont(new Font("TimesRoman", Font.BOLD, 16));
+		labelPoints.setForeground(Color.BLUE);
+		add(labelPoints);
+
+		labelInfoPause = new JLabel("Pauza -  naciœnij P");
+		labelInfoPause.setBounds(200, 25, 150, 20);
+		labelInfoPause.setFont(new Font("TimesRoman", Font.BOLD, 14));
+		add(labelInfoPause);
+
+		labelInfoStart = new JLabel("Aby rozpocz¹æ u¿yj którejœ ze strza³ek");
+		labelInfoStart.setBounds(130, 45, 280, 20);
+		labelInfoStart.setFont(new Font("TimesRoman", Font.BOLD, 14));
+		add(labelInfoStart);
 
 		restartButton = new JButton("Restart");
 		restartButton.setBounds(20, 20, 100, 20);
@@ -80,35 +100,52 @@ public class Snake extends JFrame {
 			repaint();
 		});
 
-		label1.setActionMap(actionMap);
+		labelGameName.setActionMap(actionMap);
 
-		InputMap inputMap = label1.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		InputMap inputMap = labelGameName.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 		inputMap.put(KeyStroke.getKeyStroke("RIGHT"), "move_Right");
 		inputMap.put(KeyStroke.getKeyStroke("LEFT"), "move_Left");
 		inputMap.put(KeyStroke.getKeyStroke("UP"), "move_Up");
 		inputMap.put(KeyStroke.getKeyStroke("DOWN"), "move_Down");
 		inputMap.put(KeyStroke.getKeyStroke("P"), "pause");
+		inputMap.put(KeyStroke.getKeyStroke("ctrl R"), "restart");
 
 		actionMap.put("move_Right", actionRight);
 		actionMap.put("move_Left", actionLeft);
 		actionMap.put("move_Up", actionUp);
 		actionMap.put("move_Down", actionDown);
 		actionMap.put("pause", actionPauseGame);
+		actionMap.put("restart", actionRestart);
 
 		add(figures);
 
 	}
 
+	AbstractAction actionRestart = new AbstractAction() {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+
+			restartButton.doClick();
+		}
+	};
+
 	AbstractAction actionPauseGame = new AbstractAction() {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {			
+		public void actionPerformed(ActionEvent e) {
 
-			if (pauseGame == false)
+			if (pauseGame == false) {
 				pauseGame = true;
-
-			else if (pauseGame == true)
+				figures.setPauseInscription(true);
+				repaint();
+				
+			}
+			else if (pauseGame == true) {
 				pauseGame = false;
+				figures.setPauseInscription(false);
+				repaint();
+			}
 
 		}
 	};
@@ -159,8 +196,6 @@ public class Snake extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			
-
 			xValue = figures.getXposition();
 
 			if (pauseGame == false || gameOver != true) {
@@ -203,8 +238,6 @@ public class Snake extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-		
-
 			yValue = figures.getYposition();
 
 			if (pauseGame == false || gameOver != true) {
@@ -246,8 +279,6 @@ public class Snake extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
-			
 
 			yValue = figures.getYposition();
 
@@ -293,6 +324,8 @@ public class Snake extends JFrame {
 
 		snake.figures.setRandomPoint();
 		snake.figures.addFood();
+		snake.figures.setStartPosition();
+		snake.figures.addHeadRectList();
 
 		while (true) {
 
@@ -423,17 +456,33 @@ public class Snake extends JFrame {
 					snake.figures.changeSnakeLong(snake.figures.snakeLong() + 1);
 					snake.figures.setRandomPoint();
 					snake.figures.addFood();
+					snake.points += 1;
+					snake.labelPoints.setText("Punkty: " + String.valueOf(snake.points));
 				}
 
 			}
+			
+			
 
 			try {
-				Thread.sleep(50);
+				Thread.sleep(snake.setSpeed);
 			} catch (InterruptedException e) {
 
 				e.printStackTrace();
 			}
 
+			if (snake.points == 5)
+				snake.setSpeed = 50;
+			
+			else if(snake.points == 10)
+				snake.setSpeed = 40;
+			
+			else if(snake.points == 15)
+				snake.setSpeed = 30;
+			
+			else if(snake.points == 20)
+				snake.setSpeed = 20;
+;
 		}
 
 	}
