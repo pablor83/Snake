@@ -3,6 +3,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -19,7 +20,7 @@ public class Snake extends JFrame {
 
 	ActionMap actionMap = new ActionMap();
 
-	JLabel labelGameName, labelPoints, labelInfoPause, labelInfoStart;
+	JLabel labelGameName, labelPoints, labelInfoPause, labelInfoStart, labelLifes;
 	JButton restartButton;
 
 	private boolean xR = false;
@@ -44,6 +45,7 @@ public class Snake extends JFrame {
 	private boolean gameOver = true;
 
 	private int points = 0;
+	private int lifes = 3;
 	private long setSpeed = 60;
 
 	Snake() {
@@ -60,10 +62,16 @@ public class Snake extends JFrame {
 		add(labelGameName);
 
 		labelPoints = new JLabel("Punkty: " + points);
-		labelPoints.setBounds(370, 20, 100, 20);
+		labelPoints.setBounds(390, 5, 100, 20);
 		labelPoints.setFont(new Font("TimesRoman", Font.BOLD, 16));
 		labelPoints.setForeground(Color.BLUE);
 		add(labelPoints);
+
+		labelLifes = new JLabel("¯ycia: " + lifes);
+		labelLifes.setBounds(390, 25, 100, 20);
+		labelLifes.setFont(new Font("TimesRoman", Font.BOLD, 14));
+		labelLifes.setForeground(Color.BLUE);
+		add(labelLifes);
 
 		labelInfoPause = new JLabel("Pauza -  naciœnij P");
 		labelInfoPause.setBounds(200, 25, 150, 20);
@@ -87,6 +95,9 @@ public class Snake extends JFrame {
 			yD = false;
 			int snakeGrow;
 
+			lifes = 3;
+			labelLifes.setText("¯ycia: " + String.valueOf(lifes));
+			figures.setDisplayGameOver(false);
 			figures.cleanList();
 			figures.changeSnakeLong(12);
 			figures.setStartPosition();
@@ -139,9 +150,8 @@ public class Snake extends JFrame {
 				pauseGame = true;
 				figures.setPauseInscription(true);
 				repaint();
-				
-			}
-			else if (pauseGame == true) {
+
+			} else if (pauseGame == true) {
 				pauseGame = false;
 				figures.setPauseInscription(false);
 				repaint();
@@ -449,6 +459,34 @@ public class Snake extends JFrame {
 					}
 
 					snake.cleanSnake();
+					snake.lifes -= 1;
+					snake.labelLifes.setText(String.valueOf("¯ycia: " + snake.lifes));
+
+					if (snake.lifes > 0) {
+						
+						snake.figures.setTimer(true);
+
+						for (int i = 3; i > 0; i--) {
+							
+							snake.figures.startCountdownn();
+							snake.repaint();
+							
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+
+								e.printStackTrace();
+							}
+						}
+						
+						snake.figures.setTimer(false);
+						snake.figures.setTimeSec();
+						snake.respawn();
+
+					}
+
+					else if (snake.lifes == 0)
+						snake.figures.setDisplayGameOver(true);
 				}
 
 				if (snake.figures.detectEatenFood() == true) {
@@ -461,8 +499,6 @@ public class Snake extends JFrame {
 				}
 
 			}
-			
-			
 
 			try {
 				Thread.sleep(snake.setSpeed);
@@ -471,18 +507,29 @@ public class Snake extends JFrame {
 				e.printStackTrace();
 			}
 
-			if (snake.points == 5)
+			if (snake.points == 5) {
 				snake.setSpeed = 50;
-			
-			else if(snake.points == 10)
+				snake.figures.setFoodSize(2);
+				snake.figures.addFood();
+			}
+
+			else if (snake.points == 10) {
 				snake.setSpeed = 40;
-			
-			else if(snake.points == 15)
+				snake.figures.setFoodSize(3);
+			snake.figures.addFood();
+		}
+
+			else if (snake.points == 15) {
 				snake.setSpeed = 30;
-			
-			else if(snake.points == 20)
+				snake.figures.setFoodSize(4);
+				snake.figures.addFood();
+			}
+
+			else if (snake.points == 20) {
 				snake.setSpeed = 20;
-;
+				snake.figures.setFoodSize(5);
+				snake.figures.addFood();
+			}
 		}
 
 	}
@@ -522,6 +569,11 @@ public class Snake extends JFrame {
 		yU = false;
 		yD = false;
 
+		triggerDelayedRight = false;
+		triggerDelayedLeft = false;
+		triggerDelayedUp = false;
+		triggerDelayedDown = false;
+		
 		gameOver = true;
 		pauseGame = true;
 
@@ -536,5 +588,43 @@ public class Snake extends JFrame {
 
 		figures.cleanList();
 		repaint();
+	}
+
+	public void respawn() {
+
+		figures.setStartPosition();
+		figures.changeSnakeLong(20);
+		figures.setColorSnake(0500100);
+
+		int[] direction = new int[4];
+		direction[0] = 1;
+		direction[1] = 2;
+		direction[2] = 3;
+		direction[3] = 4;
+
+		Random randomDirection = new Random();
+
+		triggerDelayedRight = false;
+		triggerDelayedLeft = false;
+		triggerDelayedUp = false;
+		triggerDelayedDown = false;
+
+		switch (randomDirection.nextInt(4)) {
+		case 1:
+			xR = true;
+			break;
+		case 2:
+			xL = true;
+			break;
+		case 3:
+			yU = true;
+			break;
+		case 4:
+			yD = true;
+			break;
+		}
+
+		gameOver = false;
+		pauseGame = false;
 	}
 }

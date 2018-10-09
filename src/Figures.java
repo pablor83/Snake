@@ -20,10 +20,12 @@ public class Figures extends JPanel {
 	private int rX;
 	private int rY;
 
-		
 	private int sLong = 20;
 	private int foodListSize = 1;
 	private boolean pauseInscription = false;
+	private boolean gameOver = false;
+	private boolean respawnTimer = false;
+	private int countingDown = 4;
 
 	private int colorSnake = 0500100;
 
@@ -193,6 +195,26 @@ public class Figures extends JPanel {
 		pauseInscription = b;
 	}
 
+	public void setDisplayGameOver(boolean tf) {
+
+		gameOver = tf;
+	}
+	
+	public void setTimer(boolean timer) {
+		
+		respawnTimer = timer;
+	}
+	
+	public void startCountdownn() {
+		
+		countingDown -=1;
+	}
+	
+	public void setTimeSec() {
+		
+		countingDown = 4;
+	}
+
 	Figures() {
 		repaint();
 	}
@@ -205,13 +227,12 @@ public class Figures extends JPanel {
 
 //		g2d.drawString("Oœ X: " + x, 360, 15);
 //		g2d.drawString("Oœ Y: " + y, 420, 15);
-				
+
 		for (Rectangle rFood : foodList) {
 
 			g2d.setColor(colorFood);
 			g2d.fill(rFood);
 		}
-		
 
 		for (Rectangle rectList : list) {
 
@@ -239,30 +260,37 @@ public class Figures extends JPanel {
 
 			list.removeAll(list);
 
-			int[] xP = { x+10, x+20, x+40, x+30, x+50, x+30, x+40, x+20, x+10, x, x-20, x-10, x-30,
-					x-10, x-20, x };
-			int[] yP = { y-20, y, y-20, y+10, y+20, y+30, y+60, y+40, y+60, y+40, y+60, y+30, y+20,
-					y+10, y-20, y };
+			int[] xP = { x + 10, x + 20, x + 40, x + 30, x + 50, x + 30, x + 40, x + 20, x + 10, x, x - 20, x - 10,
+					x - 30, x - 10, x - 20, x };
+			int[] yP = { y - 20, y, y - 20, y + 10, y + 20, y + 30, y + 60, y + 40, y + 60, y + 40, y + 60, y + 30,
+					y + 20, y + 10, y - 20, y };
 
-			GradientPaint gp = new GradientPaint(x, y, Color.yellow, x+40, y+60, Color.RED);
+			GradientPaint gp = new GradientPaint(x, y, Color.yellow, x + 40, y + 60, Color.RED);
 			g2d.setPaint(gp);
 			g2d.fillPolygon(xP, yP, xP.length);
-
-			Font font = new Font("TimesRoman", Font.BOLD, 30);
-
-			g2d.setColor(Color.red);
-			g2d.setFont(font);
-			g2d.drawString("GAME OVER!!!", 155, 280);
-
 		}
 		
-		
+		if (respawnTimer == true) {
+			
+			g2d.setColor(Color.red);
+			g2d.setFont(new Font("TimesRoman", Font.BOLD, 24));
+
+			g2d.drawString("Odrodzenie za: "+countingDown, 155, 200);
+		}
+
+		if (gameOver == true) {
+
+			g2d.setColor(Color.red);
+			g2d.setFont(new Font("TimesRoman", Font.BOLD, 30));
+			g2d.drawString("GAME OVER!!!", 155, 280);
+		}
+
 		if (pauseInscription == true) {
 
-			Font font = new Font("TimesRoman", Font.BOLD, 24);
-			g2d.setColor(Color.red);
-			g2d.setFont(font);
 			
+			g2d.setColor(Color.red);
+			g2d.setFont(new Font("TimesRoman", Font.BOLD, 24));
+
 			g2d.drawString("Pauza", 215, 250);
 		}
 
