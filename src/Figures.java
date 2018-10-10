@@ -21,11 +21,12 @@ public class Figures extends JPanel {
 	private int rY;
 
 	private int sLong = 20;
-	private int foodListSize = 1;
+	private int foodSize = 1;
 	private boolean pauseInscription = false;
 	private boolean gameOver = false;
 	private boolean respawnTimer = false;
 	private int countingDown = 4;
+	private int intersectionfieldpositionnumber;
 
 	private int colorSnake = 0500100;
 
@@ -66,10 +67,10 @@ public class Figures extends JPanel {
 
 	}
 
-	public void setRandomPoint() {
+	public void setRandomPointFood() {
 
-		rX = randomFoodAndStartPosition.nextInt(426) + 25;
-		rY = randomFoodAndStartPosition.nextInt(311) + 85;
+		rX = randomFoodAndStartPosition.nextInt(451) + 25;
+		rY = randomFoodAndStartPosition.nextInt(396) + 85;
 
 	}
 
@@ -85,7 +86,7 @@ public class Figures extends JPanel {
 
 	public void setFoodSize(int i) {
 
-		foodListSize = i;
+		foodSize = i;
 	}
 
 	public void setXstep(int x) {
@@ -108,6 +109,11 @@ public class Figures extends JPanel {
 		this.y = y;
 	}
 
+	public void deleteTheItem(int number) {
+
+		foodList.remove(number);
+	}
+
 	public int getXposition() {
 
 		return x;
@@ -116,6 +122,16 @@ public class Figures extends JPanel {
 	public int getYposition() {
 
 		return y;
+	}
+
+	public int getIntersectionfield() {
+
+		return intersectionfieldpositionnumber;
+	}
+
+	public int getFoodSize() {
+
+		return foodSize;
 	}
 
 	public boolean tailCollisionDetection() {
@@ -128,6 +144,7 @@ public class Figures extends JPanel {
 				if (list.get(list.size() - 1).intersects(list.get(i)))
 
 					collision = true;
+
 			}
 		}
 
@@ -141,8 +158,11 @@ public class Figures extends JPanel {
 		if (list.size() > 0) {
 			for (int i = 0; i < foodList.size(); i++) {
 
-				if (list.get(list.size() - 1).intersects(foodList.get(i)))
+				if (list.get(list.size() - 1).intersects(foodList.get(i))) {
 					food = true;
+					intersectionfieldpositionnumber = i;
+
+				}
 			}
 		}
 
@@ -159,6 +179,13 @@ public class Figures extends JPanel {
 		int listSize = list.size();
 
 		return listSize;
+	}
+
+	public int getFoodListSize() {
+
+		int foodListSize = foodList.size();
+
+		return foodListSize;
 	}
 
 	public int snakeLong() {
@@ -199,19 +226,19 @@ public class Figures extends JPanel {
 
 		gameOver = tf;
 	}
-	
+
 	public void setTimer(boolean timer) {
-		
+
 		respawnTimer = timer;
 	}
-	
+
 	public void startCountdownn() {
-		
-		countingDown -=1;
+
+		countingDown -= 1;
 	}
-	
+
 	public void setTimeSec() {
-		
+
 		countingDown = 4;
 	}
 
@@ -241,8 +268,32 @@ public class Figures extends JPanel {
 			g2d.fill(rectList);
 		}
 
-		if (foodList.size() > foodListSize)
-			foodList.remove(0);
+		if (detectEatenFood() == true) {
+
+			if (getFoodSize() == 1 && getFoodListSize() == 1) {
+
+				deleteTheItem(getIntersectionfield());
+				addFood();
+
+			}
+
+			else if (getFoodSize() > 1 && getFoodListSize() > 1) {
+
+				deleteTheItem(getIntersectionfield());
+
+			}
+
+			else if (getFoodSize() > 1 && getFoodListSize() == 1) {
+
+				deleteTheItem(getIntersectionfield());
+
+				for (int i = 0; i < getFoodSize(); i++) {
+					setRandomPointFood();
+					addFood();
+				}
+			}
+
+		}
 
 		if (list.size() == sLong)
 			list.remove(0);
@@ -269,13 +320,13 @@ public class Figures extends JPanel {
 			g2d.setPaint(gp);
 			g2d.fillPolygon(xP, yP, xP.length);
 		}
-		
+
 		if (respawnTimer == true) {
-			
+
 			g2d.setColor(Color.red);
 			g2d.setFont(new Font("TimesRoman", Font.BOLD, 24));
 
-			g2d.drawString("Odrodzenie za: "+countingDown, 155, 200);
+			g2d.drawString("Odrodzenie za: " + countingDown, 155, 200);
 		}
 
 		if (gameOver == true) {
@@ -287,7 +338,6 @@ public class Figures extends JPanel {
 
 		if (pauseInscription == true) {
 
-			
 			g2d.setColor(Color.red);
 			g2d.setFont(new Font("TimesRoman", Font.BOLD, 24));
 

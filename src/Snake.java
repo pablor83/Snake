@@ -48,6 +48,8 @@ public class Snake extends JFrame {
 	private int lifes = 3;
 	private long setSpeed = 60;
 
+	private int higherLevelControl = 2;
+
 	Snake() {
 
 		setSize(540, 570);
@@ -96,6 +98,8 @@ public class Snake extends JFrame {
 			int snakeGrow;
 
 			lifes = 3;
+			points = 0;
+			labelPoints.setText("Punkty: " + String.valueOf(points));
 			labelLifes.setText("¯ycia: " + String.valueOf(lifes));
 			figures.setDisplayGameOver(false);
 			figures.cleanList();
@@ -332,7 +336,7 @@ public class Snake extends JFrame {
 
 		Snake snake = new Snake();
 
-		snake.figures.setRandomPoint();
+		snake.figures.setRandomPointFood();
 		snake.figures.addFood();
 		snake.figures.setStartPosition();
 		snake.figures.addHeadRectList();
@@ -463,14 +467,14 @@ public class Snake extends JFrame {
 					snake.labelLifes.setText(String.valueOf("¯ycia: " + snake.lifes));
 
 					if (snake.lifes > 0) {
-						
+
 						snake.figures.setTimer(true);
 
 						for (int i = 3; i > 0; i--) {
-							
+
 							snake.figures.startCountdownn();
 							snake.repaint();
-							
+
 							try {
 								Thread.sleep(1000);
 							} catch (InterruptedException e) {
@@ -478,7 +482,7 @@ public class Snake extends JFrame {
 								e.printStackTrace();
 							}
 						}
-						
+
 						snake.figures.setTimer(false);
 						snake.figures.setTimeSec();
 						snake.respawn();
@@ -492,8 +496,6 @@ public class Snake extends JFrame {
 				if (snake.figures.detectEatenFood() == true) {
 
 					snake.figures.changeSnakeLong(snake.figures.snakeLong() + 1);
-					snake.figures.setRandomPoint();
-					snake.figures.addFood();
 					snake.points += 1;
 					snake.labelPoints.setText("Punkty: " + String.valueOf(snake.points));
 				}
@@ -507,28 +509,28 @@ public class Snake extends JFrame {
 				e.printStackTrace();
 			}
 
-			if (snake.points == 5) {
+			if (snake.points == 2 && snake.higherLevelControl == 2) {
 				snake.setSpeed = 50;
 				snake.figures.setFoodSize(2);
-				snake.figures.addFood();
+				snake.higherLevelControl += 1;
 			}
 
-			else if (snake.points == 10) {
+			else if (snake.points == 10 && snake.higherLevelControl == 3) {
 				snake.setSpeed = 40;
 				snake.figures.setFoodSize(3);
-			snake.figures.addFood();
-		}
-
-			else if (snake.points == 15) {
-				snake.setSpeed = 30;
-				snake.figures.setFoodSize(4);
-				snake.figures.addFood();
+				snake.higherLevelControl += 1;
 			}
 
-			else if (snake.points == 20) {
+			else if (snake.points == 15 && snake.higherLevelControl == 4) {
+				snake.setSpeed = 30;
+				snake.figures.setFoodSize(4);
+				snake.higherLevelControl += 1;
+			}
+
+			else if (snake.points == 20 && snake.higherLevelControl == 5) {
 				snake.setSpeed = 20;
 				snake.figures.setFoodSize(5);
-				snake.figures.addFood();
+				snake.higherLevelControl += 1;
 			}
 		}
 
@@ -573,7 +575,7 @@ public class Snake extends JFrame {
 		triggerDelayedLeft = false;
 		triggerDelayedUp = false;
 		triggerDelayedDown = false;
-		
+
 		gameOver = true;
 		pauseGame = true;
 
