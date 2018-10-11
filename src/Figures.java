@@ -37,6 +37,17 @@ public class Figures extends JPanel {
 
 	Color colorFood = new Color(300300300);
 
+	public void addHeadRectList() {
+
+		list.add(new Rectangle(x, y, 25, 25));
+
+	}
+
+	public void addFood() {
+
+		foodList.add(new Rectangle(rX, rY, 25, 25));
+	}
+
 	public void setStartPosition() {
 
 		int[] x = new int[52];
@@ -61,22 +72,11 @@ public class Figures extends JPanel {
 
 	}
 
-	public void addHeadRectList() {
-
-		list.add(new Rectangle(x, y, 25, 25));
-
-	}
-
 	public void setRandomPointFood() {
 
 		rX = randomFoodAndStartPosition.nextInt(451) + 25;
 		rY = randomFoodAndStartPosition.nextInt(396) + 85;
 
-	}
-
-	public void addFood() {
-
-		foodList.add(new Rectangle(rX, rY, 25, 25));
 	}
 
 	public void setColorSnake(int c) {
@@ -109,9 +109,24 @@ public class Figures extends JPanel {
 		this.y = y;
 	}
 
-	public void deleteTheItem(int number) {
+	public void setPauseInscription(boolean b) {
 
-		foodList.remove(number);
+		pauseInscription = b;
+	}
+
+	public void setDisplayGameOver(boolean tf) {
+
+		gameOver = tf;
+	}
+
+	public void setTimer(boolean timer) {
+
+		respawnTimer = timer;
+	}
+
+	public void setTimeSec() {
+
+		countingDown = 4;
 	}
 
 	public int getXposition() {
@@ -132,6 +147,26 @@ public class Figures extends JPanel {
 	public int getFoodSize() {
 
 		return foodSize;
+	}
+
+	public int getListSize() {
+
+		return list.size();
+	}
+
+	public int getFoodListSize() {
+
+		return foodList.size();
+	}
+
+	public Rectangle getHeadRectCoordinates() {
+
+		Rectangle rectHead = new Rectangle(x, y, 25, 25);
+
+		if (list.size() > 0)
+			rectHead = list.get(list.size() - 1);
+
+		return rectHead;
 	}
 
 	public boolean tailCollisionDetection() {
@@ -169,26 +204,18 @@ public class Figures extends JPanel {
 		return food;
 	}
 
+	public void deleteTheItem(int number) {
+
+		foodList.remove(number);
+	}
+
 	public void changeSnakelength(int i) {
 
 		slength = i;
 	}
 
-	public int getListSize() {
-
-
-		return list.size();
-	}
-
-	public int getFoodListSize() {
-
-		
-		return foodList.size();
-	}
-
 	public int snakelength() {
 
-		
 		return slength;
 	}
 
@@ -204,39 +231,9 @@ public class Figures extends JPanel {
 		return rect;
 	}
 
-	public Rectangle getHeadRectCoordinates() {
-
-		Rectangle rectHead = new Rectangle(x, y, 25, 25);
-
-		if (list.size() > 0)
-			rectHead = list.get(list.size() - 1);
-
-		return rectHead;
-	}
-
-	public void setPauseInscription(boolean b) {
-
-		pauseInscription = b;
-	}
-
-	public void setDisplayGameOver(boolean tf) {
-
-		gameOver = tf;
-	}
-
-	public void setTimer(boolean timer) {
-
-		respawnTimer = timer;
-	}
-
 	public void startCountdownn() {
 
 		countingDown -= 1;
-	}
-
-	public void setTimeSec() {
-
-		countingDown = 4;
 	}
 
 	Figures() {
