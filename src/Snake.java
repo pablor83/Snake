@@ -20,7 +20,7 @@ public class Snake extends JFrame {
 
 	ActionMap actionMap = new ActionMap();
 
-	JLabel labelGameName, labelPoints, labelInfoPause, labelInfoStart, labelLifes;
+	
 	JButton restartButton;
 
 	private boolean xR = false;
@@ -45,8 +45,6 @@ public class Snake extends JFrame {
 	private boolean pauseGame = false;
 	private boolean gameOver = true;
 
-	private int points = 0;
-	private int lifes = 3;
 	private long setSpeed = 60;
 
 	private int higherLevelControl = 2;
@@ -60,32 +58,6 @@ public class Snake extends JFrame {
 		setVisible(true);
 		setResizable(false);
 
-		labelGameName = new JLabel("W¹¿");
-		labelGameName.setBounds(240, 5, 50, 20);
-		add(labelGameName);
-
-		labelPoints = new JLabel("Punkty: " + points);
-		labelPoints.setBounds(390, 5, 100, 20);
-		labelPoints.setFont(new Font("TimesRoman", Font.BOLD, 16));
-		labelPoints.setForeground(Color.BLUE);
-		add(labelPoints);
-
-		labelLifes = new JLabel("¯ycia: " + lifes);
-		labelLifes.setBounds(390, 25, 100, 20);
-		labelLifes.setFont(new Font("TimesRoman", Font.BOLD, 14));
-		labelLifes.setForeground(Color.BLUE);
-		add(labelLifes);
-
-		labelInfoPause = new JLabel("Pauza -  naciœnij P");
-		labelInfoPause.setBounds(200, 25, 150, 20);
-		labelInfoPause.setFont(new Font("TimesRoman", Font.BOLD, 14));
-		add(labelInfoPause);
-
-		labelInfoStart = new JLabel("Aby rozpocz¹æ u¿yj którejœ ze strza³ek");
-		labelInfoStart.setBounds(130, 45, 280, 20);
-		labelInfoStart.setFont(new Font("TimesRoman", Font.BOLD, 14));
-		add(labelInfoStart);
-
 		restartButton = new JButton("Restart");
 		restartButton.setBounds(20, 20, 100, 20);
 		add(restartButton);
@@ -98,10 +70,10 @@ public class Snake extends JFrame {
 			yD = false;
 			int snakeGrow;
 
-			lifes = 3;
-			points = 0;
-			labelPoints.setText("Punkty: " + String.valueOf(points));
-			labelLifes.setText("¯ycia: " + String.valueOf(lifes));
+			figures.setLifes(3);
+			figures.setPoints(0);
+			figures.setPoints(0);
+			figures.setLifes(3);
 			figures.setDisplayGameOver(false);
 			figures.cleanList();
 			figures.changeSnakelength(12);
@@ -116,9 +88,9 @@ public class Snake extends JFrame {
 			repaint();
 		});
 
-		labelGameName.setActionMap(actionMap);
+		restartButton.setActionMap(actionMap);
 
-		InputMap inputMap = labelGameName.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		InputMap inputMap = restartButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 		inputMap.put(KeyStroke.getKeyStroke("RIGHT"), "move_Right");
 		inputMap.put(KeyStroke.getKeyStroke("LEFT"), "move_Left");
 		inputMap.put(KeyStroke.getKeyStroke("UP"), "move_Up");
@@ -466,10 +438,10 @@ public class Snake extends JFrame {
 					}
 
 					snake.cleanSnake();
-					snake.lifes -= 1;
-					snake.labelLifes.setText(String.valueOf("¯ycia: " + snake.lifes));
+					int lifes = snake.figures.getLifes();
+					snake.figures.setLifes(lifes-=1);
 
-					if (snake.lifes > 0) {
+					if (snake.figures.getLifes() > 0) {
 
 						snake.figures.setTimer(true);
 
@@ -492,15 +464,16 @@ public class Snake extends JFrame {
 
 					}
 
-					else if (snake.lifes == 0)
+					else if (snake.figures.getLifes() == 0)
 						snake.figures.setDisplayGameOver(true);
 				}
 
 				if (snake.figures.detectEatenFood() == true) {
 
+					int points = snake.figures.getPoints();
 					snake.figures.changeSnakelength(snake.figures.snakelength() + 1);
-					snake.points += 1;
-					snake.labelPoints.setText("Punkty: " + String.valueOf(snake.points));
+					snake.figures.setPoints(points+=1);
+					
 				}
 
 			}
@@ -512,25 +485,25 @@ public class Snake extends JFrame {
 				e.printStackTrace();
 			}
 
-			if (snake.points == 2 && snake.higherLevelControl == 2) {
+			if (snake.figures.getPoints() == 2 && snake.higherLevelControl == 2) {
 				snake.setSpeed = 50;
 				snake.figures.setFoodSize(2);
 				snake.higherLevelControl += 1;
 			}
 
-			else if (snake.points == 10 && snake.higherLevelControl == 3) {
+			else if (snake.figures.getPoints()  == 10 && snake.higherLevelControl == 3) {
 				snake.setSpeed = 40;
 				snake.figures.setFoodSize(3);
 				snake.higherLevelControl += 1;
 			}
 
-			else if (snake.points == 15 && snake.higherLevelControl == 4) {
+			else if (snake.figures.getPoints()  == 15 && snake.higherLevelControl == 4) {
 				snake.setSpeed = 30;
 				snake.figures.setFoodSize(4);
 				snake.higherLevelControl += 1;
 			}
 
-			else if (snake.points == 20 && snake.higherLevelControl == 5) {
+			else if (snake.figures.getPoints()  == 20 && snake.higherLevelControl == 5) {
 				snake.setSpeed = 20;
 				snake.figures.setFoodSize(5);
 				snake.higherLevelControl += 1;

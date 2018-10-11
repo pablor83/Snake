@@ -27,6 +27,9 @@ public class Figures extends JPanel {
 	private boolean respawnTimer = false;
 	private int countingDown = 4;
 	private int intersectionfieldpositionnumber;
+	
+	private int points = 0;
+	private int lifes = 3;
 
 	private int colorSnake = 0500100;
 
@@ -127,6 +130,26 @@ public class Figures extends JPanel {
 	public void setTimeSec() {
 
 		countingDown = 4;
+	}
+	
+	public void setPoints(int points) {
+		
+		this.points = points;
+	}
+	
+	public void setLifes(int lifes) {
+		
+		this.lifes = lifes;
+	}
+	
+	public int getPoints() {
+		
+		return points;
+	}
+	
+	public int getLifes() {
+		
+		return lifes;
 	}
 
 	public int getXposition() {
@@ -248,6 +271,30 @@ public class Figures extends JPanel {
 
 //		g2d.drawString("Oœ X: " + x, 360, 15);
 //		g2d.drawString("Oœ Y: " + y, 420, 15);
+		g2d.setColor(Color.black);
+		g2d.setFont(new Font("TimesRoman", Font.BOLD, 12));
+		g2d.drawString("W¹¿", 240, 15);
+		
+		g2d.setFont(new Font("TimesRoman", Font.BOLD, 12));
+		g2d.drawString("Aby rozpocz¹æ u¿yj którejœ ze strza³ek", 145, 30);		
+		
+		g2d.setFont(new Font("TimesRoman", Font.BOLD, 14));
+		g2d.drawString("Pauza -  naciœnij P", 190, 60);			
+		
+		g2d.setFont(new Font("TimesRoman", Font.BOLD, 11));
+		g2d.drawString("CTRL + R", 47, 60);
+		
+		g2d.setColor(Color.blue);
+		
+		g2d.setFont(new Font("TimesRoman", Font.BOLD, 16));
+		g2d.drawString("Punkty: "+points, 380, 55);
+		
+		g2d.setFont(new Font("TimesRoman", Font.BOLD, 14));
+		g2d.drawString("¯ycie: "+lifes, 380, 25);
+		
+		g2d.setColor(new Color(colorSnake));
+		g2d.setFont(new Font("TimesRoman", Font.PLAIN, 11));
+		g2d.drawString("Zielony - w¹¿", 220, 42);
 
 		for (Rectangle rFood : foodList) {
 
