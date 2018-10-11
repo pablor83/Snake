@@ -20,7 +20,7 @@ public class Figures extends JPanel {
 	private int rX;
 	private int rY;
 
-	private int sLong = 20;
+	private int slength = 16;
 	private int foodSize = 1;
 	private boolean pauseInscription = false;
 	private boolean gameOver = false;
@@ -169,30 +169,27 @@ public class Figures extends JPanel {
 		return food;
 	}
 
-	public void changeSnakeLong(int i) {
+	public void changeSnakelength(int i) {
 
-		sLong = i;
+		slength = i;
 	}
 
 	public int getListSize() {
 
-		int listSize = list.size();
 
-		return listSize;
+		return list.size();
 	}
 
 	public int getFoodListSize() {
 
-		int foodListSize = foodList.size();
-
-		return foodListSize;
+		
+		return foodList.size();
 	}
 
-	public int snakeLong() {
+	public int snakelength() {
 
-		int snakeLong = sLong;
-
-		return snakeLong;
+		
+		return slength;
 	}
 
 	public void cleanList() {
@@ -270,24 +267,25 @@ public class Figures extends JPanel {
 
 		if (detectEatenFood() == true) {
 
-			if (getFoodSize() == 1 && getFoodListSize() == 1) {
+			if (foodSize == 1 && foodList.size() == 1) {
 
-				deleteTheItem(getIntersectionfield());
+				foodList.remove(intersectionfieldpositionnumber);
+				setRandomPointFood();
 				addFood();
 
 			}
 
-			else if (getFoodSize() > 1 && getFoodListSize() > 1) {
+			else if (foodSize > 1 && foodList.size() > 1) {
 
-				deleteTheItem(getIntersectionfield());
+				foodList.remove(intersectionfieldpositionnumber);
 
 			}
 
-			else if (getFoodSize() > 1 && getFoodListSize() == 1) {
+			else if (foodSize > 1 && foodList.size() == 1) {
 
-				deleteTheItem(getIntersectionfield());
+				foodList.remove(intersectionfieldpositionnumber);
 
-				for (int i = 0; i < getFoodSize(); i++) {
+				for (int i = 0; i < foodSize; i++) {
 					setRandomPointFood();
 					addFood();
 				}
@@ -295,19 +293,19 @@ public class Figures extends JPanel {
 
 		}
 
-		if (list.size() == sLong)
+		if (list.size() == slength)
 			list.remove(0);
 
-		else if (list.size() > sLong && sLong >= 1) {
+		else if (list.size() > slength && slength >= 1) {
 
-			int setSizeList = list.size() - sLong;
+			int setSizeList = list.size() - slength;
 
 			for (int i = 0; i <= setSizeList; i++) {
 				list.remove(0);
 			}
 		}
 
-		if (sLong == 1) {
+		if (slength == 1) {
 
 			list.removeAll(list);
 

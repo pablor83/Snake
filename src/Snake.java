@@ -39,7 +39,8 @@ public class Snake extends JFrame {
 	private char courseLeftRight;
 	private char courseUpDown;
 
-	private int setSnakeLong;
+	private int setSnakelength;
+	private int snakeLengthBeforeCollision;
 
 	private boolean pauseGame = false;
 	private boolean gameOver = true;
@@ -103,7 +104,7 @@ public class Snake extends JFrame {
 			labelLifes.setText("¯ycia: " + String.valueOf(lifes));
 			figures.setDisplayGameOver(false);
 			figures.cleanList();
-			figures.changeSnakeLong(12);
+			figures.changeSnakelength(12);
 			figures.setStartPosition();
 
 			figures.setColorSnake(0500100);
@@ -446,10 +447,12 @@ public class Snake extends JFrame {
 						|| snake.figures.getHeadRectCoordinates().intersectsLine(501, 506, 24, 506) == true
 						|| snake.figures.getHeadRectCoordinates().intersectsLine(24, 506, 24, 84) == true) {
 
-					snake.setSnakeLong = snake.figures.snakeLong();
+					snake.snakeLengthBeforeCollision = snake.figures.snakelength();
+					snake.setSnakelength = snake.figures.snakelength();
 					snake.figures.setColorSnake(400100100);
-
-					for (int i = snake.setSnakeLong; i > 1; i--) {
+					
+					
+					for (int i = snake.setSnakelength; i > 1; i--) {
 
 						snake.killSnake();
 
@@ -495,7 +498,7 @@ public class Snake extends JFrame {
 
 				if (snake.figures.detectEatenFood() == true) {
 
-					snake.figures.changeSnakeLong(snake.figures.snakeLong() + 1);
+					snake.figures.changeSnakelength(snake.figures.snakelength() + 1);
 					snake.points += 1;
 					snake.labelPoints.setText("Punkty: " + String.valueOf(snake.points));
 				}
@@ -579,9 +582,9 @@ public class Snake extends JFrame {
 		gameOver = true;
 		pauseGame = true;
 
-		int snakeLong = setSnakeLong -= 1;
+		int snakelength = setSnakelength -= 1;
 
-		figures.changeSnakeLong(snakeLong);
+		figures.changeSnakelength(snakelength);
 		repaint();
 
 	}
@@ -595,7 +598,7 @@ public class Snake extends JFrame {
 	public void respawn() {
 
 		figures.setStartPosition();
-		figures.changeSnakeLong(20);
+		figures.changeSnakelength(snakeLengthBeforeCollision);
 		figures.setColorSnake(0500100);
 
 		int[] direction = new int[4];
@@ -610,8 +613,9 @@ public class Snake extends JFrame {
 		triggerDelayedLeft = false;
 		triggerDelayedUp = false;
 		triggerDelayedDown = false;
+		
 
-		switch (randomDirection.nextInt(4)) {
+		switch (randomDirection.nextInt(4)+1) {
 		case 1:
 			xR = true;
 			break;
@@ -628,5 +632,7 @@ public class Snake extends JFrame {
 
 		gameOver = false;
 		pauseGame = false;
+		
+		
 	}
 }
