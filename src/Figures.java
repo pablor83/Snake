@@ -20,18 +20,22 @@ public class Figures extends JPanel {
 	private int rX;
 	private int rY;
 
-	private int slength = 16;
+	private int slength = 20;
 	private int foodSize = 1;
 	private boolean pauseInscription = false;
 	private boolean gameOver = false;
 	private boolean respawnTimer = false;
-	private int countingDown = 4;
+	private int countingDownInitialTime = 4;
 	private int intersectionfieldpositionnumber;
-	
+
 	private int points = 0;
 	private int lifes = 3;
+	private int level = 1;
+	private int chooseColor = 0;
 
 	private int colorSnake = 0500100;
+	
+	private Color[] colorsOfLevel = {Color.GREEN, Color.blue, Color.yellow, Color.orange, Color.RED};
 
 	private List<Rectangle> list = new LinkedList<>();
 	private List<Rectangle> foodList = new LinkedList<>();
@@ -127,28 +131,48 @@ public class Figures extends JPanel {
 		respawnTimer = timer;
 	}
 
-	public void setTimeSec() {
+	public void setTimeSec(int timeSec) {
 
-		countingDown = 4;
+		countingDownInitialTime = timeSec;
 	}
-	
+
 	public void setPoints(int points) {
-		
+
 		this.points = points;
 	}
-	
+
 	public void setLifes(int lifes) {
-		
+
 		this.lifes = lifes;
 	}
 	
-	public int getPoints() {
+	public void setLevel(int level) {
 		
-		return points;
+		this.level = level;
 	}
 	
-	public int getLifes() {
+	public void setColorOfLevel(int colorLevel) {
 		
+		chooseColor = colorLevel;
+	}
+
+	public boolean getTimer() {
+
+		return respawnTimer;
+	}
+
+	public int getTimerValue() {
+
+		return countingDownInitialTime;
+	}
+
+	public int getPoints() {
+
+		return points;
+	}
+
+	public int getLifes() {
+
 		return lifes;
 	}
 
@@ -180,6 +204,16 @@ public class Figures extends JPanel {
 	public int getFoodListSize() {
 
 		return foodList.size();
+	}
+
+	public boolean isGameOverON() {
+
+		return gameOver;
+	}
+
+	public void resetTimeSec() {
+
+		countingDownInitialTime = 4;
 	}
 
 	public Rectangle getHeadRectCoordinates() {
@@ -256,7 +290,7 @@ public class Figures extends JPanel {
 
 	public void startCountdownn() {
 
-		countingDown -= 1;
+		countingDownInitialTime -= 1;
 	}
 
 	Figures() {
@@ -274,27 +308,31 @@ public class Figures extends JPanel {
 		g2d.setColor(Color.black);
 		g2d.setFont(new Font("TimesRoman", Font.BOLD, 12));
 		g2d.drawString("W¹¿", 240, 15);
-		
+
 		g2d.setFont(new Font("TimesRoman", Font.BOLD, 12));
-		g2d.drawString("Aby rozpocz¹æ u¿yj którejœ ze strza³ek", 145, 30);		
-		
+		g2d.drawString("Aby rozpocz¹æ u¿yj którejœ ze strza³ek", 145, 30);
+
 		g2d.setFont(new Font("TimesRoman", Font.BOLD, 14));
-		g2d.drawString("Pauza -  naciœnij P", 190, 60);			
-		
+		g2d.drawString("Pauza -  naciœnij P", 190, 60);
+
 		g2d.setFont(new Font("TimesRoman", Font.BOLD, 11));
 		g2d.drawString("CTRL + R", 47, 60);
-		
+
 		g2d.setColor(Color.blue);
-		
+
 		g2d.setFont(new Font("TimesRoman", Font.BOLD, 16));
-		g2d.drawString("Punkty: "+points, 380, 55);
-		
+		g2d.drawString("Punkty: " + points, 380, 45);
+
 		g2d.setFont(new Font("TimesRoman", Font.BOLD, 14));
-		g2d.drawString("¯ycie: "+lifes, 380, 25);
-		
-		g2d.setColor(new Color(colorSnake));
+		g2d.drawString("¯ycie: " + lifes, 380, 25);
+
+		g2d.setColor(new Color(0500100));
 		g2d.setFont(new Font("TimesRoman", Font.PLAIN, 11));
 		g2d.drawString("Zielony - w¹¿", 220, 42);
+		
+		g2d.setColor(colorsOfLevel[chooseColor]);
+		g2d.setFont(new Font("TimesRoman", Font.BOLD, 12));
+		g2d.drawString("Poziom: "+level, 380, 63);
 
 		for (Rectangle rFood : foodList) {
 
@@ -368,7 +406,7 @@ public class Figures extends JPanel {
 			g2d.setColor(Color.red);
 			g2d.setFont(new Font("TimesRoman", Font.BOLD, 24));
 
-			g2d.drawString("Odrodzenie za: " + countingDown, 155, 200);
+			g2d.drawString("Odrodzenie za: " + countingDownInitialTime, 155, 200);
 		}
 
 		if (gameOver == true) {

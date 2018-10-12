@@ -20,7 +20,6 @@ public class Snake extends JFrame {
 
 	ActionMap actionMap = new ActionMap();
 
-	
 	JButton restartButton;
 
 	private boolean xR = false;
@@ -41,9 +40,12 @@ public class Snake extends JFrame {
 
 	private int setSnakelength;
 	private int snakeLengthBeforeCollision;
+	private int fuseForSnakeLengthBeforeCollision = 0;
 
 	private boolean pauseGame = false;
-	private boolean gameOver = true;
+	private boolean gameOver = false;
+	private boolean startCountingDown = true;
+	private boolean stopGame = false;
 
 	private long setSpeed = 60;
 
@@ -68,22 +70,30 @@ public class Snake extends JFrame {
 			xL = false;
 			yU = false;
 			yD = false;
-			int snakeGrow;
+
+			triggerDelayedRight = false;
+			triggerDelayedLeft = false;
+			triggerDelayedUp = false;
+			triggerDelayedDown = false;
+
+			gameOver = false;
+			pauseGame = false;
+			stopGame = false;
+			startCountingDown = true;
+			fuseForSnakeLengthBeforeCollision=0;
 
 			figures.setLifes(3);
 			figures.setPoints(0);
-			figures.setPoints(0);
-			figures.setLifes(3);
 			figures.setDisplayGameOver(false);
+			figures.setTimer(false);
+			figures.setPauseInscription(false);
+			figures.resetTimeSec();
 			figures.cleanList();
-			figures.changeSnakelength(12);
+			figures.changeSnakelength(8);
 			figures.setStartPosition();
 
 			figures.setColorSnake(0500100);
 			figures.addHeadRectList();
-
-			gameOver = false;
-			pauseGame = false;
 
 			repaint();
 		});
@@ -125,11 +135,15 @@ public class Snake extends JFrame {
 
 			if (pauseGame == false) {
 				pauseGame = true;
+				stopGame = true;
+				startCountingDown = false;
 				figures.setPauseInscription(true);
 				repaint();
 
 			} else if (pauseGame == true) {
 				pauseGame = false;
+				stopGame = false;
+				startCountingDown = true;
 				figures.setPauseInscription(false);
 				repaint();
 			}
@@ -142,7 +156,7 @@ public class Snake extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			if (pauseGame == false || gameOver != true) {
+			if (pauseGame == false || gameOver == true) {
 
 				xValue = figures.getXposition();
 
@@ -185,7 +199,7 @@ public class Snake extends JFrame {
 
 			xValue = figures.getXposition();
 
-			if (pauseGame == false || gameOver != true) {
+			if (pauseGame == false || gameOver == true) {
 
 				if (yValue + 25 <= figures.getYposition() || yValue - 25 >= figures.getYposition()) {
 
@@ -227,7 +241,7 @@ public class Snake extends JFrame {
 
 			yValue = figures.getYposition();
 
-			if (pauseGame == false || gameOver != true) {
+			if (pauseGame == false || gameOver == true) {
 
 				if (xValue + 25 <= figures.getXposition() || xValue - 25 >= figures.getXposition()) {
 
@@ -269,7 +283,7 @@ public class Snake extends JFrame {
 
 			yValue = figures.getYposition();
 
-			if (pauseGame == false || gameOver != true) {
+			if (pauseGame == false || gameOver == true) {
 
 				if (xValue + 25 <= figures.getXposition() || xValue - 25 >= figures.getXposition()) {
 
@@ -316,7 +330,7 @@ public class Snake extends JFrame {
 
 		while (true) {
 
-			if (snake.pauseGame == false) {
+			if (snake.stopGame == false || snake.pauseGame == false) {
 
 				if (snake.xR == true) {
 					snake.goRight();
@@ -412,42 +426,70 @@ public class Snake extends JFrame {
 						snake.xL = true;
 
 				}
+				
+				
 
 				if (snake.figures.tailCollisionDetection() == true
 						|| snake.figures.getHeadRectCoordinates().intersectsLine(24, 84, 501, 84) == true
 						|| snake.figures.getHeadRectCoordinates().intersectsLine(501, 84, 501, 506) == true
 						|| snake.figures.getHeadRectCoordinates().intersectsLine(501, 506, 24, 506) == true
-						|| snake.figures.getHeadRectCoordinates().intersectsLine(24, 506, 24, 84) == true) {
+						|| snake.figures.getHeadRectCoordinates().intersectsLine(24, 506, 24, 84) == true
+						|| snake.fuseForSnakeLengthBeforeCollision==1) {
 
+					
+					
+					if(snake.fuseForSnakeLengthBeforeCollision == 0) {
 					snake.snakeLengthBeforeCollision = snake.figures.snakelength();
+					snake.fuseForSnakeLengthBeforeCollision=1;
+					}
+					
 					snake.setSnakelength = snake.figures.snakelength();
 					snake.figures.setColorSnake(400100100);
 					
 					
-					for (int i = snake.setSnakelength; i > 1; i--) {
 
-						snake.killSnake();
+					int i = snake.setSnakelength;
+					
+					if (snake.figures.getTimerValue() == 4 && snake.figures.getLifes() > 0) {
+						
+						
+						
+						while(i>1 && snake.startCountingDown) {
+							
+							snake.killSnake();
 
-						try {
-							Thread.sleep(50);
-						} catch (InterruptedException e) {
+							try {
+								Thread.sleep(50);
+							} catch (InterruptedException e) {
 
-							e.printStackTrace();
+								e.printStackTrace();
+							}
+							
+							i--;
+
 						}
-
+						
+					
+						
 					}
+				
+					if(snake.setSnakelength==1 && snake.figures.getTimer() == false && snake.figures.isGameOverON() == false) {						
+						snake.cleanSnake();
+						int lifes = snake.figures.getLifes();
+						snake.figures.setLifes(lifes -= 1);
+						
+						}
+					
+					
 
-					snake.cleanSnake();
-					int lifes = snake.figures.getLifes();
-					snake.figures.setLifes(lifes-=1);
-
-					if (snake.figures.getLifes() > 0) {
+					if (snake.figures.getLifes() > 0 && i == 1) {
 
 						snake.figures.setTimer(true);
 
-						for (int i = 3; i > 0; i--) {
+						while (snake.startCountingDown && snake.figures.getTimerValue() > 1) {
 
 							snake.figures.startCountdownn();
+
 							snake.repaint();
 
 							try {
@@ -456,24 +498,34 @@ public class Snake extends JFrame {
 
 								e.printStackTrace();
 							}
+
 						}
 
-						snake.figures.setTimer(false);
-						snake.figures.setTimeSec();
-						snake.respawn();
+						if (snake.figures.getTimerValue() == 1 && snake.pauseGame == false) {
+
+							snake.figures.setTimer(false);
+							snake.figures.resetTimeSec();
+							snake.fuseForSnakeLengthBeforeCollision = 0;
+							snake.respawn();
+							
+
+						}
+						
+						
 
 					}
 
 					else if (snake.figures.getLifes() == 0)
 						snake.figures.setDisplayGameOver(true);
+
 				}
 
 				if (snake.figures.detectEatenFood() == true) {
 
 					int points = snake.figures.getPoints();
 					snake.figures.changeSnakelength(snake.figures.snakelength() + 1);
-					snake.figures.setPoints(points+=1);
-					
+					snake.figures.setPoints(points += 1);
+
 				}
 
 			}
@@ -485,27 +537,35 @@ public class Snake extends JFrame {
 				e.printStackTrace();
 			}
 
-			if (snake.figures.getPoints() == 2 && snake.higherLevelControl == 2) {
+			if (snake.figures.getPoints() == 5 && snake.higherLevelControl == 2) {
 				snake.setSpeed = 50;
 				snake.figures.setFoodSize(2);
+				snake.figures.setColorOfLevel(1);
+				snake.figures.setLevel(2);
 				snake.higherLevelControl += 1;
 			}
 
-			else if (snake.figures.getPoints()  == 10 && snake.higherLevelControl == 3) {
+			else if (snake.figures.getPoints() == 50 && snake.higherLevelControl == 3) {
 				snake.setSpeed = 40;
 				snake.figures.setFoodSize(3);
+				snake.figures.setColorOfLevel(2);
+				snake.figures.setLevel(3);
 				snake.higherLevelControl += 1;
 			}
 
-			else if (snake.figures.getPoints()  == 15 && snake.higherLevelControl == 4) {
+			else if (snake.figures.getPoints() == 80 && snake.higherLevelControl == 4) {
 				snake.setSpeed = 30;
 				snake.figures.setFoodSize(4);
+				snake.figures.setColorOfLevel(3);
+				snake.figures.setLevel(4);
 				snake.higherLevelControl += 1;
 			}
 
-			else if (snake.figures.getPoints()  == 20 && snake.higherLevelControl == 5) {
+			else if (snake.figures.getPoints() == 120 && snake.higherLevelControl == 5) {
 				snake.setSpeed = 20;
 				snake.figures.setFoodSize(5);
+				snake.figures.setColorOfLevel(4);
+				snake.figures.setLevel(5);
 				snake.higherLevelControl += 1;
 			}
 		}
@@ -552,12 +612,10 @@ public class Snake extends JFrame {
 		triggerDelayedUp = false;
 		triggerDelayedDown = false;
 
-		gameOver = true;
-		pauseGame = true;
+		gameOver = false;
+		stopGame = true;
 
-		int snakelength = setSnakelength -= 1;
-
-		figures.changeSnakelength(snakelength);
+		figures.changeSnakelength(setSnakelength -= 1);
 		repaint();
 
 	}
@@ -569,7 +627,7 @@ public class Snake extends JFrame {
 	}
 
 	public void respawn() {
-
+		
 		figures.setStartPosition();
 		figures.changeSnakelength(snakeLengthBeforeCollision);
 		figures.setColorSnake(0500100);
@@ -586,9 +644,8 @@ public class Snake extends JFrame {
 		triggerDelayedLeft = false;
 		triggerDelayedUp = false;
 		triggerDelayedDown = false;
-		
 
-		switch (randomDirection.nextInt(4)+1) {
+		switch (randomDirection.nextInt(4) + 1) {
 		case 1:
 			xR = true;
 			break;
@@ -604,8 +661,7 @@ public class Snake extends JFrame {
 		}
 
 		gameOver = false;
-		pauseGame = false;
-		
-		
+		stopGame = false;
+
 	}
 }
